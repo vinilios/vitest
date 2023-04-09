@@ -1,4 +1,5 @@
 import { existsSync, promises as fs } from 'node:fs'
+import path from 'node:path'
 import type { ViteDevServer } from 'vite'
 import { mergeConfig } from 'vite'
 import { basename, dirname, join, normalize, relative } from 'pathe'
@@ -152,7 +153,8 @@ export class Vitest {
   }
 
   private async resolveWorkspace(options: UserConfig, cliOptions: UserConfig) {
-    const configDir = dirname(this.server.config.configFile || this.config.root)
+    const configFile = this.server.config.configFile
+    const configDir = configFile ? dirname(configFile) : path.resolve(this.config.root)
     const rootFiles = await fs.readdir(configDir)
     const workspaceConfigName = workspaceFiles.find((configFile) => {
       return rootFiles.includes(configFile)
